@@ -3,12 +3,14 @@ sap.ui.define([
 	"sap/ui/core/routing/History",
 	"sap/m/MessageBox",
 	"sap/ui/model/json/JSONModel",
-	"idxtec/lib/fragment/CentroCustoHelpDialog",
-	"idxtec/lib/fragment/ContaContabilHelpDialog",
-	"idxtec/lib/fragment/MotoristaHelpDialog",
-	"idxtec/lib/fragment/MunicipiosHelpDialog"
+	"br/com/idxtecVeiculo/helpers/CentroCustoHelpDialog",
+	"br/com/idxtecVeiculo/helpers/ContaContabilHelpDialog",
+	"br/com/idxtecVeiculo/helpers/MotoristaHelpDialog",
+	"br/com/idxtecVeiculo/helpers/MunicipiosHelpDialog",
+	"br/com/idxtecVeiculo/helpers/UfHelpDialog",
+	"br/com/idxtecVeiculo/services/Session"
 ], function(Controller, History, MessageBox, JSONModel, CentroCustoHelpDialog,
-	ContaContabilHelpDialog, MotoristaHelpDialog, MunicipiosHelpDialog) {
+	ContaContabilHelpDialog, MotoristaHelpDialog, MunicipiosHelpDialog, UfHelpDialog, Session) {
 	"use strict";
 
 	return Controller.extend("br.com.idxtecVeiculo.controller.GravarVeiculo", {
@@ -45,24 +47,33 @@ sap.ui.define([
 			this.getView().byId("municipioplaca").setSelectedKey(this.getModel("model").getProperty("/MunicipioPlaca"));
 		},
 		
+		ufReceived: function() {
+			this.getView().byId("ufplaca").setSelectedKey(this.getModel("model").getProperty("/UfPlaca"));
+		},
+		
 		handleSearchCentroCusto: function(oEvent){
-			var oHelp = new CentroCustoHelpDialog(this.getView(), "centrocusto");
-			oHelp.getDialog().open();
+			var sInputId = oEvent.getParameter("id");
+			CentroCustoHelpDialog.handleValueHelp(this.getView(), sInputId, this);
 		},
 		
 		handleSearchContaContabil: function(oEvent){
-			var oHelp = new ContaContabilHelpDialog(this.getView(), "contacontabil");
-			oHelp.getDialog().open();
+			var sInputId = oEvent.getParameter("id");
+			ContaContabilHelpDialog.handleValueHelp(this.getView(), sInputId, this);
 		},
 		
 		handleSearchMotorista: function(oEvent){
-			var oHelp = new MotoristaHelpDialog(this.getView(), "motorista");
-			oHelp.getDialog().open();
+			var sInputId = oEvent.getParameter("id");
+			MotoristaHelpDialog.handleValueHelp(this.getView(), sInputId, this);
 		},
 		
 		handleSearchMunicipio: function(oEvent){
-			var oHelp = new MunicipiosHelpDialog(this.getView(), "municipioplaca");
-			oHelp.getDialog().open();
+			var sInputId = oEvent.getParameter("id");
+			MunicipiosHelpDialog.handleValueHelp(this.getView(), sInputId, this);
+		},
+		
+		handleSearchUf: function(oEvent){
+			var sInputId = oEvent.getParameter("id");
+			UfHelpDialog.handleValueHelp(this.getView(), sInputId, this);
 		},
 		
 		_routerMatch: function(){
@@ -78,6 +89,7 @@ sap.ui.define([
 			this.getView().byId("contacontabil").setValue(null);
 			this.getView().byId("motorista").setValue(null);
 			this.getView().byId("municipioplaca").setValue(null);
+			this.getView().byId("ufplaca").setValue(null);
 			
 			if (this._operacao === "incluir"){
 				
@@ -90,15 +102,19 @@ sap.ui.define([
 					"Placa": "",
 					"PlacaCarreta": "",
 					"Propriedade": "PROPRIO",
-					"VencimentoLicenciamento": null,
+					"VencimentoLicenciamento": new Date(),
 					"Comissao": 0.00,
-					"PesoMaximo": "",
+					"PesoMaximo": 0,
 					"CentroCusto": 0,
 					"ContaContabil": "",
 					"Motorista": 0,
 					"UfPlaca": 0,
 					"MunicipioPlaca": 0,
-					"Observacao": ""
+					"Observacao": "",
+					"Empresa" : Session.get("EMPRESA_ID"),
+					"Usuario": Session.get("USUARIO_ID"),
+					"EmpresaDetails": { __metadata: { uri: "/Empresas(" + Session.get("EMPRESA_ID") + ")"}},
+					"UsuarioDetails": { __metadata: { uri: "/Usuarios(" + Session.get("USUARIO_ID") + ")"}}
 				};
 				
 				oJSONModel.setData(oNovoVeiculo);
@@ -112,9 +128,6 @@ sap.ui.define([
 				oModel.read(oParam.sPath,{
 					success: function(oData) {
 						oJSONModel.setData(oData);
-					},
-					error: function(oError) {
-						MessageBox.error(oError.responseText);
 					}
 				});
 			}
@@ -122,7 +135,7 @@ sap.ui.define([
 		
 		onSalvar: function(){
 			if (this._checarCampos(this.getView())) {
-				MessageBox.information("Preencha todos os campos obrigatórios!");
+				MessageBox.warning("Preencha todos os campos obrigatórios!");
 				return;
 			}
 			
@@ -149,11 +162,10 @@ sap.ui.define([
 			var oJSONModel = this.getOwnerComponent().getModel("model");
 			var oDados = oJSONModel.getData();
 			
-			oDados.CentroCusto = oDados.CentroCusto ? parseInt(oDados.CentroCusto, 0) : 0;
-			oDados.Motorista = oDados.Motorista ? parseInt(oDados.Motorista, 0) : 0;
-			oDados.UfPlaca = oDados.UfPlaca ? parseInt(oDados.UfPlaca, 0) : 0;
-			oDados.MunicipioPlaca = oDados.MunicipioPlaca ? parseInt(oDados.MunicipioPlaca, 0) : 0;
-			oDados.PesoMaximo = parseInt(oDados.PesoMaximo, 0); 
+			oDados.CentroCusto = oDados.CentroCusto ? oDados.CentroCusto : 0;
+			oDados.Motorista = oDados.Motorista ? oDados.Motorista : 0;
+			oDados.UfPlaca = oDados.UfPlaca ? oDados.UfPlaca : 0;
+			oDados.MunicipioPlaca = oDados.MunicipioPlaca ? oDados.MunicipioPlaca : 0;
 			
 			oDados.CentroCustoDetails = {
 				__metadata: {
@@ -184,7 +196,7 @@ sap.ui.define([
 					uri: "/Municipios(" + oDados.MunicipioPlaca + ")"
 				}
 			};
-
+			debugger; 
 			return oDados;
 		},
 		
@@ -199,9 +211,6 @@ sap.ui.define([
 							that._goBack(); 
 						}
 					});
-				},
-				error: function(oError) {
-					MessageBox.error(oError.responseText);
 				}
 			});
 		},
@@ -217,9 +226,6 @@ sap.ui.define([
 							that._goBack();
 						}
 					});
-				},
-				error: function(oError) {
-					MessageBox.error(oError.responseText);
 				}
 			});
 		},
@@ -236,5 +242,4 @@ sap.ui.define([
 			this._goBack();
 		}
 	});
-
 });

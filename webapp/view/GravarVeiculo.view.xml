@@ -7,143 +7,156 @@ xmlns:html="http://www.w3.org/1999/xhtml"
 xmlns:f="sap.ui.layout.form">
 	<App>
 		<pages>
-			<Page showNavButton="true"
-				navButtonPress="onVoltar">
+			<Page showHeader="false">
 				<content>
-					<VBox class="sapUiSmallMargin">	
-						<f:SimpleForm id="SimpleFormChange480_Trial"
-						editable="true"
-						layout="ResponsiveGridLayout"
-						title="{view>/titulo}"
-						labelSpanXL="4"
-						labelSpanL="4"
-						labelSpanM="4"
-						labelSpanS="12"
-						adjustLabelSpan="false"
-						emptySpanXL="0"
-						emptySpanL="0"
-						emptySpanM="0"
-						emptySpanS="0"
-						columnsXL="3"
-						columnsL="2"
-						columnsM="2"
-						singleContainerFullSize="false">
-							<f:content>
-								<Label text="Placa" labelFor="placa"/>
-								<Input id="placa" value="{model>/Placa}" required="true"/>
-								
-								<Label text="Placa da carreta" labelFor="placacarreta"/>
-								<Input id="placacarreta" value="{model>/PlacaCarreta}" required="true"/>
-								
-								<Label text="Propriedade" labelFor="propriedade"/>
-								<Select selectedKey="{model>/Propriedade}"
-									id="propriedade"> 
-									<core:Item key="PROPRIO" text="PRÓPRIO"/>
-									<core:Item key="TERCEIRO" text="TERCEIRO"/>
-								</Select>
-								
-								<Label text="Venc. do licenciamento" labelFor="vencimento"/>
-								<DatePicker id="vencimento"
-									dateValue="{model>/VencimentoLicenciamento}"
-									displayFormat="dd.MM.yyyy"
-									placeholder="dd.mm.aaaa"/>
-								
-								<Label text="Comissão" labelFor="comissao"/>
-								<Input id="comissao" value="{path: 'model>/Comissao', 
-										type: 'sap.ui.model.odata.type.Single',
-			                            formatOptions:{
-			                                decimals: 2,
-			                                decimalSeparator: ','
-			                            }}"/>
-			                    
-			                    <Label text="Peso máximo" labelFor="pesomaximo"/>
-								<Input id="pesomaximo" value="{model>/PesoMaximo}"/>
-								
-								<Label text="Centro de custo" labelFor="centrocusto"/>
-								<Input selectedKey="{model>/CentroCusto}"
-									textFormatMode="KeyValue"
-									showSuggestion="true"
-									showValueHelp="true"
-									valueHelpRequest="handleSearchCentroCusto"
-									suggestionItems="{
-										path: '/CentroCustos',
-										events: {
-											dataReceived: '.centroCustoReceived'
-										}}"
-									id="centrocusto">
-									<suggestionItems>
-										<core:ListItem key="{Id}" text="{Descricao}"/>
-									</suggestionItems>
-								</Input>
-								
-								<Label text="Conta contábil" labelFor="contacontabil"/>
-								<Input selectedKey="{model>/ContaContabil}"
-									textFormatMode="KeyValue"
-									showSuggestion="true"
-									showValueHelp="true"
-									valueHelpRequest="handleSearchContaContabil"
-									suggestionItems="{
-										path: '/PlanoContas',
-										events: {
-											dataReceived: '.contaContabilReceived'
-										}}"
-									id="contacontabil">
-									<suggestionItems>
-										<core:ListItem key="{Codigo}" text="{Descricao}"/>
-									</suggestionItems>
-								</Input>
-								
-								<Label text="Motorista" labelFor="motorista"/>
-								<Input selectedKey="{model>/Motorista}"
-									textFormatMode="KeyValue"
-									showSuggestion="true"
-									showValueHelp="true"
-									valueHelpRequest="handleSearchMotorista"
-									suggestionItems="{
-										path: '/Motoristas',
-										events: {
-											dataReceived: '.motoristaReceived'
-										}}"
-									id="motorista">
-									<suggestionItems>
-										<core:ListItem key="{Id}" text="{Nome}"/>
-									</suggestionItems>
-								</Input>
-								
-								<Label text="UF da Placa" labelFor="ufplaca"/>
-								<ComboBox selectedKey="{model>/UfPlaca}"
-									items="{path: '/Ufs'}"
-									id="ufplaca"> 
-									<core:ListItem key="{Id}" text="{Sigla}"/>
-								</ComboBox>
-								
-								<Label text="Município da placa" labelFor="municipioplaca"/>
-								<Input selectedKey="{model>/MunicipioPlaca}"
-									textFormatMode="KeyValue"
-									showSuggestion="true"
-									showValueHelp="true"
-									valueHelpRequest="handleSearchMunicipio"
-									suggestionItems="{
-										path: '/Municipios',
-										events: {
-											dataReceived: '.municipioReceived'
-										}}"
-									id="municipioplaca">
-									<suggestionItems>
-										<core:ListItem key="{Id}" text="{Nome}"/>
-									</suggestionItems>
-								</Input>
-								
-								<Label text="Observação" labelFor="obs"/>
-								<TextArea id="obs" value="{model>/Observacao}" rows="6" maxLength="254"/>
-							</f:content>
-						</f:SimpleForm>
+					<VBox class="sapUiSmallMargin">
+						<Panel headerText="Veículo">
+							<f:SimpleForm id="formVeiculo"
+								editable="true"
+								layout="ResponsiveGridLayout"
+								labelSpanXL="4"
+								labelSpanL="4"
+								labelSpanM="4"
+								labelSpanS="12"
+								adjustLabelSpan="false"
+								emptySpanXL="0"
+								emptySpanL="0"
+								emptySpanM="0"
+								emptySpanS="0"
+								columnsXL="3"
+								columnsL="2"
+								columnsM="2"
+								singleContainerFullSize="false">
+								<f:content>
+									<core:Title text="{view>/titulo}"/>
+									<Label text="Placa" labelFor="placa"/>
+									<Input id="placa" value="{model>/Placa}" required="true"/>
+									
+									<Label text="Placa da carreta" labelFor="placacarreta"/>
+									<Input id="placacarreta" value="{model>/PlacaCarreta}" required="true"/>
+									
+									<Label text="Propriedade" labelFor="propriedade"/>
+									<Select selectedKey="{model>/Propriedade}"
+										id="propriedade"> 
+										<core:Item key="PROPRIO" text="PRÓPRIO"/>
+										<core:Item key="TERCEIRO" text="TERCEIRO"/>
+									</Select>
+									
+									<Label text="Venc. do licenciamento" labelFor="vencimento"/>
+									<DatePicker id="vencimento"
+										dateValue="{model>/VencimentoLicenciamento}"
+										displayFormat="dd.MM.yyyy"
+										placeholder="dd.mm.aaaa"/>
+									
+									<Label text="Comissão" labelFor="comissao"/>
+									<Input id="comissao" value="{path: 'model>/Comissao', 
+											type: 'sap.ui.model.odata.type.Single',
+				                            formatOptions:{
+				                                decimals: 2,
+				                                decimalSeparator: ','
+				                            }}"/>
+				                    
+				                    <Label text="Peso máximo" labelFor="pesomaximo"/>
+									<Input id="pesomaximo" value="{path: 'model>/PesoMaximo',
+										type: 'sap.ui.model.odata.type.Int32'}"/>
+									
+									<Label text="Centro de custo" labelFor="centrocusto"/>
+									<Input selectedKey="{path: 'model>/CentroCusto', type: 'sap.ui.model.odata.type.Int32'}"
+										textFormatMode="KeyValue"
+										showSuggestion="true"
+										showValueHelp="true"
+										valueHelpRequest="handleSearchCentroCusto"
+										suggestionItems="{
+											path: '/CentroCustos',
+											events: {
+												dataReceived: '.centroCustoReceived'
+											}}"
+										id="centrocusto">
+										<suggestionItems>
+											<core:ListItem key="{Id}" text="{Descricao}"/>
+										</suggestionItems>
+									</Input>
+									
+									<Label text="Conta contábil" labelFor="contacontabil"/>
+									<Input selectedKey="{model>/ContaContabil}"
+										textFormatMode="KeyValue"
+										showSuggestion="true"
+										showValueHelp="true"
+										valueHelpRequest="handleSearchContaContabil"
+										suggestionItems="{
+											path: '/PlanoContas',
+											events: {
+												dataReceived: '.contaContabilReceived'
+											}}"
+										id="contacontabil">
+										<suggestionItems>
+											<core:ListItem key="{Codigo}" text="{Descricao}"/>
+										</suggestionItems>
+									</Input>
+									
+									<Label text="Motorista" labelFor="motorista"/>
+									<Input selectedKey="{path: 'model>/Motorista', type: 'sap.ui.model.odata.Int32'}"
+										textFormatMode="KeyValue"
+										showSuggestion="true"
+										showValueHelp="true"
+										valueHelpRequest="handleSearchMotorista"
+										suggestionItems="{
+											path: '/Motoristas',
+											events: {
+												dataReceived: '.motoristaReceived'
+											}}"
+										id="motorista">
+										<suggestionItems>
+											<core:ListItem key="{Id}" text="{Nome}"/>
+										</suggestionItems>
+									</Input>
+									
+									<Label text="UF da Placa" labelFor="ufplaca"/>
+									<Input selectedKey="{model>/UfPlaca}"
+										textFormatMode="KeyValue"
+										showSuggestion="true"
+										showValueHelp="true"
+										valueHelpRequest="handleSearchUf"
+										suggestionItems="{
+											path: '/Ufs',
+											events: {
+												dataReceived: '.ufReceived'
+											}}"
+										id="ufplaca">
+										<suggestionItems>
+											<core:ListItem key="{Id}" text="{Sigla}"/>
+										</suggestionItems>
+									</Input>
+									
+									<Label text="Município da placa" labelFor="municipioplaca"/>
+									<Input selectedKey="{model>/MunicipioPlaca}"
+										textFormatMode="KeyValue"
+										showSuggestion="true"
+										showValueHelp="true"
+										valueHelpRequest="handleSearchMunicipio"
+										suggestionItems="{
+											path: '/Municipios',
+											events: {
+												dataReceived: '.municipioReceived'
+											}}"
+										id="municipioplaca">
+										<suggestionItems>
+											<core:ListItem key="{Id}" text="{Nome}"/>
+										</suggestionItems>
+									</Input>
+									
+									<Label text="Observação" labelFor="obs"/>
+									<TextArea id="obs" value="{model>/Observacao}" rows="6" maxLength="254"/>
+								</f:content>
+							</f:SimpleForm>
+						</Panel>
 					</VBox>
 				</content>
 				<footer>
 					<Toolbar>
 						<ToolbarSpacer/>
-						<Button id="salvar" text="Salvar" press="onSalvar"/>
+						<Button icon="sap-icon://save" id="salvar" text="Salvar" press="onSalvar"/>
+						<Button icon="sap-icon://reset" id="voltar" text="Cancelar" press="onVoltar"/>
 					</Toolbar>
 				</footer>
 			</Page>
