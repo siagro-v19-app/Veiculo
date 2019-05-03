@@ -6,9 +6,11 @@ sap.ui.define([
 	
 	return {
 		
-		handleValueHelp: function(oView, sInputId) {
+		handleValueHelp: function(oView, sInputId, oController) {
 			this._oView = oView;
 			this._inputId = sInputId;
+			
+			oController.getOwnerComponent().getModel().refresh(true);
 			
 			var sFrag = "br.com.idxtecVeiculo.helpers.CentroCustoHelpDialog"; 
 			if (!this._valueHelpDialog) {
@@ -33,7 +35,9 @@ sap.ui.define([
 			var oSelectedItem = evt.getParameter("selectedItem");
 			if (oSelectedItem) {
 				var oInput = this._oView.byId(this._inputId);
-				var sId = oSelectedItem.getDescription();
+				var oCells = oSelectedItem.getCells();
+				
+				var sId = oCells[0].getNumber();
 
 				oInput.setSelectedKey(sId);
 			}

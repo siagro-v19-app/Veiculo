@@ -1,15 +1,17 @@
 sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator"
-],function (Object, Filter, FilterOperator) {
+],function (Filter, FilterOperator) {
 	"use strict";
 	
 	return {
 		
-		handleValueHelp: function(oView, sInputId) {
+		handleValueHelp: function(oView, sInputId, oController) {
 			this._oView = oView;
 			this._inputId = sInputId;
 			
+			oController.getOwnerComponent().getModel().refresh(true);
+
 			var sFrag = "br.com.idxtecVeiculo.helpers.MunicipiosHelpDialog"; 
 			if (!this._valueHelpDialog) {
 				this._valueHelpDialog = sap.ui.xmlfragment(sFrag,this);
@@ -33,7 +35,9 @@ sap.ui.define([
 			var oSelectedItem = evt.getParameter("selectedItem");
 			if (oSelectedItem) {
 				var oInput = this._oView.byId(this._inputId);
-				var sId = oSelectedItem.getDescription();
+				var oCells = oSelectedItem.getCells();
+				
+				var sId = oCells[0].getNumber();
 
 				oInput.setSelectedKey(sId);
 			}
@@ -41,7 +45,5 @@ sap.ui.define([
 			
 			this._valueHelpDialog = undefined;
 		}
-		
 	};
-	
 });
